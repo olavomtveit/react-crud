@@ -11,13 +11,11 @@ function Nav() {
   }
   return (
     <nav>
-      <Link to="/">Home</Link>
+      <Link to="/">Home</Link>|{" "}
       {auth ? (
         <>
-          |{" "}
-          <button onClick={logout} to="/dashboard">
-            Logout
-          </button>
+          <Link to="/dashboard">Dashboard</Link>|{" "}
+          <button onClick={logout}>Logout</button>
         </>
       ) : (
         <Link to="/login">Login</Link>

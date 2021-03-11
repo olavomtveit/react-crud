@@ -5,9 +5,38 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormError from "../../common/FormError";
 import Heading from "../../layout/Heading";
 import DashboardPage from "../DashboardPage";
-import { BASE_URL } from "../../../constants/api";
+import { BASE_URL, PRODUCTS_ENDPOINT } from "../../../constants/api";
+import useAxios from "../../../hooks/useAxios";
+import { productSchema } from "../../../schemas/productSchema";
 
 export default function AddProduct() {
+  const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState(null);
+
+  const history = useHistory();
+  const http = useAxios();
+
+  const { register, handleSubmit, errors } = useForm({
+    resolver: yupResolver(productSchema),
+  });
+
+  const url = `${BASE_URL}${PRODUCTS_ENDPOINT}`;
+
+  async function onSubmit(data) {
+    setSubmitting(true);
+    setServerError(null);
+
+    try {
+      const response = await http.post(url, data);
+      history.push("/dashboard/products");
+    } catch (err) {
+      console.error(err);
+      serverError(err.toString());
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <DashboardPage>
       <Heading content="Add product" />
